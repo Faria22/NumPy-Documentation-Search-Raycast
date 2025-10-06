@@ -63,6 +63,7 @@ export default function Command() {
 
     const entry = inventoryMap.get(selectedId);
     if (!entry) {
+      console.warn("[numpy-docs] Selected item missing from inventory", selectedId);
       return;
     }
 
@@ -71,11 +72,13 @@ export default function Command() {
     setDetailState((prev) => {
       const existing = prev[selectedId];
       if (existing && (existing.status === "loading" || existing.status === "ready")) {
+        console.log("[numpy-docs] Using cached detail state for", selectedId, existing.status);
         return prev;
       }
 
       shouldFetch = true;
 
+      console.log("[numpy-docs] Loading detail for", selectedId);
       return {
         ...prev,
         [selectedId]: { status: "loading" },
@@ -91,6 +94,7 @@ export default function Command() {
     fetchDocDetail(entry)
       .then((detail) => {
         if (isCancelled) {
+          console.log("[numpy-docs] Detail request cancelled for", selectedId);
           return;
         }
         setDetailState((prev) => ({
@@ -101,9 +105,11 @@ export default function Command() {
             markdown: buildMarkdown(entry, detail),
           },
         }));
+        console.log("[numpy-docs] Detail ready for", selectedId);
       })
       .catch((error) => {
         if (isCancelled) {
+          console.log("[numpy-docs] Detail error after cancel for", selectedId, error);
           return;
         }
         const message = error instanceof Error ? error.message : String(error);
@@ -112,10 +118,12 @@ export default function Command() {
           [selectedId]: { status: "error", error: message },
         }));
         showToast(Toast.Style.Failure, "Failed to load documentation", message);
+        console.error("[numpy-docs] Detail fetch failed", selectedId, error);
       });
 
     return () => {
       isCancelled = true;
+      console.log("[numpy-docs] Cleanup for", selectedId);
     };
   }, [selectedId, inventoryMap]);
 

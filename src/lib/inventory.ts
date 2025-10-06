@@ -30,6 +30,7 @@ export async function getInventory(): Promise<InventoryItem[]> {
   if (!cachedInventoryPromise) {
     cachedInventoryPromise = downloadInventory().catch((error) => {
       cachedInventoryPromise = null;
+      console.error("[numpy-docs] Failed to download inventory", error);
       throw error;
     });
   }
@@ -38,9 +39,11 @@ export async function getInventory(): Promise<InventoryItem[]> {
 }
 
 async function downloadInventory(): Promise<InventoryItem[]> {
+  console.log("[numpy-docs] Downloading objects.inv from", INVENTORY_URL);
   const response = await fetch(INVENTORY_URL);
 
   if (!response.ok) {
+    console.error("[numpy-docs] Inventory request failed", response.status, response.statusText);
     throw new Error(`Failed to load NumPy inventory: ${response.status} ${response.statusText}`);
   }
 
@@ -51,6 +54,8 @@ async function downloadInventory(): Promise<InventoryItem[]> {
   const filtered = dedupeAndFilter(lines);
 
   filtered.sort((a, b) => a.shortName.localeCompare(b.shortName));
+
+  console.log(`[numpy-docs] Inventory loaded with ${filtered.length} entries`);
 
   return filtered;
 }

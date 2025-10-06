@@ -16,13 +16,16 @@ export interface DocDetail {
 }
 
 export async function fetchDocDetail(item: InventoryItem): Promise<DocDetail> {
+  console.log(`[numpy-docs] Fetching detail for ${item.id}`, item.url);
   const response = await fetch(item.url);
 
   if (!response.ok) {
+    console.error("[numpy-docs] Detail request failed", item.url, response.status, response.statusText);
     throw new Error(`Failed to load documentation: ${response.status} ${response.statusText}`);
   }
 
   const html = await response.text();
+  console.log(`[numpy-docs] Detail response length for ${item.id}:`, html.length);
   return parseDocDetail(html, item);
 }
 
