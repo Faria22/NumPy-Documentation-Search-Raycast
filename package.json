@@ -20,7 +20,7 @@
       "name": "numpy-docs",
       "title": "NumPy Docs",
       "subtitle": "Search through Numpy documentation",
-      "description": "",
+      "description": "Search NumPy's API reference and preview documentation inside Raycast.",
       "mode": "view"
     }
   ],
