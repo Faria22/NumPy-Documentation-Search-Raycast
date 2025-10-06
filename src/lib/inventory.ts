@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import { inflateSync } from "zlib";
 
 const INVENTORY_URL = "https://numpy.org/doc/stable/objects.inv";

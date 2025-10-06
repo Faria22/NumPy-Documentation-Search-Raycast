@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import * as cheerio from "cheerio";
 import type { InventoryItem } from "./inventory";
 

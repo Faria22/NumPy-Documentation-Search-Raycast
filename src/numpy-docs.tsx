@@ -61,20 +61,30 @@ export default function Command() {
       return;
     }
 
-    const existing = detailState[selectedId];
-    if (existing && (existing.status === "loading" || existing.status === "ready")) {
-      return;
-    }
-
     const entry = inventoryMap.get(selectedId);
     if (!entry) {
       return;
     }
 
-    setDetailState((prev) => ({
-      ...prev,
-      [selectedId]: { status: "loading" },
-    }));
+    let shouldFetch = false;
+
+    setDetailState((prev) => {
+      const existing = prev[selectedId];
+      if (existing && (existing.status === "loading" || existing.status === "ready")) {
+        return prev;
+      }
+
+      shouldFetch = true;
+
+      return {
+        ...prev,
+        [selectedId]: { status: "loading" },
+      };
+    });
+
+    if (!shouldFetch) {
+      return;
+    }
 
     let isCancelled = false;
 
@@ -107,7 +117,7 @@ export default function Command() {
     return () => {
       isCancelled = true;
     };
-  }, [selectedId, inventoryMap, detailState]);
+  }, [selectedId, inventoryMap]);
 
   const listIsLoading = isLoadingInventory;
   const noResults = !listIsLoading && results.length === 0;
