@@ -1,41 +1,53 @@
 # Repository Guidelines
-This guide helps new contributors ship updates to the NumPy Documentation Search Raycast extension.
+
+This guide helps contributors ship updates to the NumPy Documentation Search Raycast extension.
 
 ## Project Structure & Module Organization
-- `src/numpy-docs.ts`: main command logic; keep additional utilities in `src/` as sibling modules.
-- `assets/extension-icon.png`: Raycast marketplace icon; store future assets here and reference via `package.json`.
-- Root configs such as `package.json`, `tsconfig.json`, `eslint.config.js`, `.prettierrc` govern build settings and linting. Avoid editing generated files in `raycast-env.d.ts`.
+
+- `src/numpy-docs.tsx`: main Raycast command with search UI, caching, and detail rendering.
+- `src/lib/`: shared utilities for Sphinx inventory loading, search ranking, and HTML parsing.
+- `src/__tests__/`: Vitest specs plus HTML fixtures that mimic NumPy docs for parser coverage.
+- `assets/extension-icon.png`: Raycast marketplace icon; keep additional assets here and reference them in `package.json`.
+- Root configs (`package.json`, `tsconfig.json`, `eslint.config.js`, `.prettierrc`, `vitest.config.ts`) define build, lint, and testing behavior.
 
 ## Build, Test, and Development Commands
+
 ```bash
 npm install
 npm run dev
 npm run build
 npm run lint
 npm run fix-lint
+npm run test
 ```
-- `npm install`: installs Raycast SDK dependencies.
-- `npm run dev`: launches `ray develop` for live-reloading the extension in Raycast.
-- `npm run build`: validates and bundles via `ray build`; required before publishing.
-- `npm run lint`: runs ESLint checks; `npm run fix-lint` applies safe autofixes.
+
+- `npm run dev`: launches `ray develop` with live reload.
+- `npm run build`: validates and bundles through `ray build`; required before publishing.
+- `npm run lint`: runs the Raycast lint pipeline (requires internet for schema checks).
+- `npm run fix-lint`: applies safe lint/format fixes.
+- `npm run test`: executes the Vitest suite for search ranking and doc parsing helpers.
 
 ## Coding Style & Naming Conventions
-- TypeScript, ES2023 target, CommonJS modules, strict mode enabled.
+
+- Strict TypeScript targeting ES2023 with module CommonJS.
 - Prettier enforces 2-space indentation, 120-character line limit, and double quotes.
-- Export commands with PascalCase names (`export const NumpyDocsCommand`), helpers with camelCase.
-- Prefer async/await over promise chains; keep command entries small and delegate to helpers in `src/`.
+- Commands export PascalCase components; helper modules export camelCase functions.
+- Prefer async/await, graceful error handling with Raycast toasts, and concise inline comments only for complex logic.
 
 ## Testing Guidelines
-- No automated test suite yet; rely on `npm run lint` and manual verification in Raycast.
-- When adding logic, create lightweight functions that can be unit tested later with Jest or Vitest.
-- Document manual test steps in PR descriptions (inputs tried, expected output) until automated coverage exists.
+
+- Unit coverage lives under `src/__tests__/`; keep fixtures minimal but faithful to NumPy markup.
+- Add Vitest cases when modifying parsing or ranking logic; run `npm run test` locally.
+- Document manual Raycast checks in PR descriptions (inputs tried, expected markdown) until we have broader automation.
 
 ## Commit & Pull Request Guidelines
-- Git history is not present in this workspace; follow conventional commits (`feat:`, `fix:`, `chore:`) for clarity.
-- Ensure each PR includes a clear summary, screenshots or screen recordings of the command if UI changes, and links to relevant issues.
-- Run `npm run lint` and `npm run build` before requesting review; mention results in the PR checklist.
+
+- Follow conventional commits (`feat:`, `fix:`, `chore:`, etc.) for clarity.
+- Each PR should summarize changes, list verification steps (`npm run test`, `npm run build`, `npm run lint`), and attach screenshots or screen recordings for UI tweaks.
+- Keep `CHANGELOG.md` updated with user-facing changes before publishing.
 
 ## Raycast-Specific Tips
-- Keep the command metadata in `package.json` synchronized with code behavior.
-- Use `ray login` with your Raycast account before publishing, and never include API tokens in commits.
-- Populate `CHANGELOG.md` with concise entries per release to ease marketplace submissions.
+
+- Ensure `package.json` metadata (`commands`, title, licensing) reflects the implemented command.
+- Use `ray login` prior to `npm run publish`, and never commit API tokens or personal Raycast data.
+- Confirm icons stay within Raycast size requirements and are referenced via relative paths.
