@@ -58,12 +58,18 @@ export default function Command() {
 
   useEffect(() => {
     if (!selectedId) {
+      console.log("[numpy-docs] No selected item; skipping detail fetch");
       return;
     }
 
     const entry = inventoryMap.get(selectedId);
     if (!entry) {
-      console.warn("[numpy-docs] Selected item missing from inventory", selectedId);
+      console.warn(
+        "[numpy-docs] Selected item missing from inventory",
+        selectedId,
+        "inventory size",
+        inventoryMap.size,
+      );
       return;
     }
 
@@ -71,12 +77,17 @@ export default function Command() {
 
     setDetailState((prev) => {
       const existing = prev[selectedId];
-      if (existing && (existing.status === "loading" || existing.status === "ready")) {
+      if (existing?.status === "ready") {
         console.log("[numpy-docs] Using cached detail state for", selectedId, existing.status);
         return prev;
       }
 
       shouldFetch = true;
+
+      if (existing?.status === "loading") {
+        console.log("[numpy-docs] Detail already loading for", selectedId);
+        return prev;
+      }
 
       console.log("[numpy-docs] Loading detail for", selectedId);
       return {
@@ -86,10 +97,13 @@ export default function Command() {
     });
 
     if (!shouldFetch) {
+      console.log("[numpy-docs] Skipping fetch because detail already loading or ready", selectedId);
       return;
     }
 
     let isCancelled = false;
+
+    console.log("[numpy-docs] Triggering detail fetch for", selectedId, entry.url);
 
     fetchDocDetail(entry)
       .then((detail) => {
@@ -105,7 +119,12 @@ export default function Command() {
             markdown: buildMarkdown(entry, detail),
           },
         }));
-        console.log("[numpy-docs] Detail ready for", selectedId);
+        console.log("[numpy-docs] Detail ready for", selectedId, {
+          signature: detail.signature,
+          descriptionCount: detail.description.length,
+          parameterCount: detail.parameters.length,
+          returnCount: detail.returns.length,
+        });
       })
       .catch((error) => {
         if (isCancelled) {
