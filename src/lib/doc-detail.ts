@@ -213,9 +213,9 @@ function formatFieldItem(item: DocFieldItem): string {
   }
   lines.push(firstLine);
 
-  // Second line: description with indentation
+  // Second line: description with line break to force new line
   if (item.description) {
-    lines.push(`    ${item.description}`);
+    lines.push(`<br/>&nbsp;&nbsp;&nbsp;&nbsp;${item.description}`);
   }
 
   // Add blank line after each parameter for better markdown rendering
