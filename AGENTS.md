@@ -45,6 +45,12 @@ npm run test
 - Follow conventional commits (`feat:`, `fix:`, `chore:`, etc.) for clarity.
 - Each PR should summarize changes, list verification steps (`npm run test`, `npm run build`, `npm run lint`), and attach screenshots or screen recordings for UI tweaks.
 - **Always update `CHANGELOG.md` after making any changes** to document user-facing modifications, bug fixes, or improvements.
+  - Use semantic versioning (MAJOR.MINOR.PATCH) for version numbers
+  - Increment PATCH version (e.g., 1.1.0 → 1.1.1) for bug fixes
+  - Increment MINOR version (e.g., 1.1.0 → 1.2.0) for new features
+  - Increment MAJOR version (e.g., 1.1.0 → 2.0.0) for breaking changes
+  - Add date in YYYY-MM-DD format (e.g., `## [1.1.1] - 2025-01-07`)
+  - Do not use `[Unreleased]` - always specify a version number and date
 - Always push your branch immediately after each commit to keep remote history in sync.
 
 ## Raycast-Specific Tips

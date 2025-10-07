@@ -17,7 +17,7 @@ export interface DocDetail {
 export function parseDocDetail(html: string, item: InventoryItem): DocDetail {
   const $ = cheerio.load(html);
 
-  const anchor = extractAnchor(item.url);
+  const anchor = extractAnchor(item.docPath);
   let target = anchor ? $("[id='" + anchor + "']") : $("section").first();
   if (!target || target.length === 0) {
     target = $("dl.py").first().children("dt").first();
