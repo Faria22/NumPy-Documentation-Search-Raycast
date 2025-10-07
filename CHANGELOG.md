@@ -1,6 +1,6 @@
 # NumPy Documentation Search Changelog
 
-## [Unreleased]
+## [1.1.1] - 2025-01-07
 
 ### Fixed
 - Remove hash fragments from documentation URLs - URLs now open to the clean page URL (e.g., `https://numpy.org/doc/stable/reference/generated/numpy.absolute.html`) instead of including the anchor fragment (e.g., `https://numpy.org/doc/stable/reference/generated/numpy.absolute.html#numpy.absolute`)
