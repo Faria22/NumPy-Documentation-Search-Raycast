@@ -125,4 +125,30 @@ describe("parseDocDetail", () => {
     expect(markdown).toContain("`False`");
     expect(markdown).toContain("`num + 1`");
   });
+
+  it("replaces numpy. with np. when useShortPrefix is true", () => {
+    const html = loadFixture("numpy.linspace.html");
+    const item: InventoryItem = {
+      id: "numpy.linspace",
+      name: "numpy.linspace",
+      shortName: "linspace",
+      role: "py:function",
+      url: "https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace",
+      docPath: "reference/generated/numpy.linspace.html#numpy.linspace",
+      displayName: "numpy.linspace",
+    };
+
+    const detail = parseDocDetail(html, item);
+    const markdownWithNp = buildMarkdown(item, detail, true);
+    const markdownWithNumpy = buildMarkdown(item, detail, false);
+
+    // Check that np. prefix is used in signature when useShortPrefix is true
+    expect(markdownWithNp).toContain("np.linspace");
+    // The URL should still contain numpy.linspace since it's the actual URL
+    expect(markdownWithNp).toContain("Source: [linspace]");
+
+    // Check that numpy. prefix is preserved when useShortPrefix is false
+    expect(markdownWithNumpy).toContain("numpy.linspace");
+    expect(markdownWithNumpy).not.toContain("np.linspace");
+  });
 });

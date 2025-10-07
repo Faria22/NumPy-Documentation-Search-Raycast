@@ -1,5 +1,6 @@
 import * as cheerio from "cheerio";
 import type { InventoryItem } from "./inventory";
+import { applyPrefixPreference } from "./prefix";
 
 export interface DocFieldItem {
   name: string;
@@ -53,12 +54,12 @@ export function parseDocDetail(html: string, item: InventoryItem): DocDetail {
   };
 }
 
-export function buildMarkdown(item: InventoryItem, detail: DocDetail): string {
+export function buildMarkdown(item: InventoryItem, detail: DocDetail, useShortPrefix = false): string {
   const lines: string[] = [];
 
   if (detail.signature) {
     lines.push("```python");
-    lines.push(detail.signature);
+    lines.push(applyPrefixPreference(detail.signature, useShortPrefix));
     lines.push("```");
     lines.push("");
   }
@@ -90,7 +91,8 @@ export function buildMarkdown(item: InventoryItem, detail: DocDetail): string {
     lines.push("");
   }
 
-  lines.push(`Source: [${item.shortName}](${item.url})`);
+  const displayShortName = applyPrefixPreference(item.shortName, useShortPrefix);
+  lines.push(`Source: [${displayShortName}](${item.url})`);
 
   return lines.join("\n").trim();
 }

@@ -1,5 +1,14 @@
 # NumPy Documentation Search Changelog
 
+## [1.2.0] - 2025-01-07
+
+### Added
+- **Prefix Toggle Preference**: New user preference to display 'np.' instead of 'numpy.' prefix throughout the extension
+  - Default setting uses 'np.' prefix (e.g., 'np.array' instead of 'numpy.array')
+  - Applies to search results (title and subtitle), function signatures, and all action menus
+  - Can be toggled in Raycast extension preferences: "Use Short Prefix" checkbox
+  - Affects display only - does not change underlying functionality or URLs
+
 ## [1.1.1] - 2025-01-07
 
 ### Fixed
