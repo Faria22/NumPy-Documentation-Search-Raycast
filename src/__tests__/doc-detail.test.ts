@@ -56,4 +56,52 @@ describe("parseDocDetail", () => {
     const markdown = buildMarkdown(item, detail);
     expect(markdown).toContain("## Returns");
   });
+
+  it("always includes signature as Python code block in markdown", () => {
+    const html = loadFixture("numpy.linspace.html");
+    const item: InventoryItem = {
+      id: "numpy.linspace",
+      name: "numpy.linspace",
+      shortName: "linspace",
+      role: "py:function",
+      url: "https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace",
+      docPath: "reference/generated/numpy.linspace.html#numpy.linspace",
+      displayName: "numpy.linspace",
+    };
+
+    const detail = parseDocDetail(html, item);
+    const markdown = buildMarkdown(item, detail);
+
+    // Should start with ```python code block
+    expect(markdown).toMatch(/^```python\n/);
+
+    // Should contain the signature in the markdown
+    expect(markdown).toContain(detail.signature);
+
+    // Count occurrences of the signature - should appear exactly once
+    const signatureOccurrences = (
+      markdown.match(new RegExp(detail.signature!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []
+    ).length;
+    expect(signatureOccurrences).toBe(1);
+  });
+
+  it("signature appears as fenced Python code block", () => {
+    const html = loadFixture("numpy.linspace.html");
+    const item: InventoryItem = {
+      id: "numpy.linspace",
+      name: "numpy.linspace",
+      shortName: "linspace",
+      role: "py:function",
+      url: "https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace",
+      docPath: "reference/generated/numpy.linspace.html#numpy.linspace",
+      displayName: "numpy.linspace",
+    };
+
+    const detail = parseDocDetail(html, item);
+
+    // Signature should always be in markdown as a Python code block
+    const markdown = buildMarkdown(item, detail);
+    expect(markdown).toMatch(/^```python\n/);
+    expect(markdown).toContain(detail.signature);
+  });
 });

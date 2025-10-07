@@ -53,15 +53,10 @@ export function parseDocDetail(html: string, item: InventoryItem): DocDetail {
   };
 }
 
-export function buildMarkdown(
-  item: InventoryItem,
-  detail: DocDetail,
-  options?: { includeSignature?: boolean },
-): string {
-  const includeSignature = options?.includeSignature ?? true;
+export function buildMarkdown(item: InventoryItem, detail: DocDetail): string {
   const lines: string[] = [];
 
-  if (includeSignature && detail.signature) {
+  if (detail.signature) {
     lines.push("```python");
     lines.push(detail.signature);
     lines.push("```");
@@ -77,7 +72,9 @@ export function buildMarkdown(
     lines.push("## Parameters");
     lines.push("");
     for (const param of detail.parameters) {
-      lines.push(formatFieldItem(param));
+      const formattedParam = formatFieldItem(param);
+      // Split the formatted parameter and add each line individually
+      lines.push(...formattedParam.split("\n"));
     }
     lines.push("");
   }
@@ -86,7 +83,9 @@ export function buildMarkdown(
     lines.push("## Returns");
     lines.push("");
     for (const value of detail.returns) {
-      lines.push(formatFieldItem(value));
+      const formattedReturn = formatFieldItem(value);
+      // Split the formatted return value and add each line individually
+      lines.push(...formattedReturn.split("\n"));
     }
     lines.push("");
   }
@@ -205,18 +204,24 @@ function parseFieldDefinition($: cheerio.CheerioAPI, container: cheerio.Cheerio)
 }
 
 function formatFieldItem(item: DocFieldItem): string {
-  const parts: string[] = [];
-  parts.push(`- **${item.name}**`);
+  const lines: string[] = [];
 
+  // First line: parameter name and type
+  let firstLine = `${item.name}`;
   if (item.type) {
-    parts.push(`*${item.type}*`);
+    firstLine += ` : *${item.type}*`;
   }
+  lines.push(firstLine);
 
+  // Second line: description with indentation
   if (item.description) {
-    parts.push(`— ${item.description}`);
+    lines.push(`> ${item.description}`);
   }
 
-  return parts.join(" ");
+  // Add blank line after each parameter for better markdown rendering
+  lines.push("");
+
+  return lines.join("\n");
 }
 
 function normalizeWhitespace(value: string): string {

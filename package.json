@@ -21,17 +21,7 @@
       "title": "NumPy Docs",
       "subtitle": "Search through Numpy documentation",
       "description": "Search NumPy's API reference and preview documentation inside Raycast.",
-      "mode": "view",
-      "preferences": [
-        {
-          "name": "pinSignature",
-          "type": "checkbox",
-          "title": "Pin Function Signature",
-          "label": "Keep signature at top",
-          "description": "Show the function signature as a fixed header above the documentation detail.",
-          "default": true
-        }
-      ]
+      "mode": "view"
     }
   ],
   "dependencies": {

@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Icon, List, getPreferenceValues } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon, List } from "@raycast/api";
 import { useEffect, useMemo, useState } from "react";
 import { useInventory } from "./hooks/useInventory";
 import { useDocDetail } from "./hooks/useDocDetail";
@@ -13,7 +13,6 @@ type DetailRenderState = {
 };
 
 export default function Command() {
-  const { pinSignature = true } = getPreferenceValues<{ pinSignature: boolean }>();
   const [searchText, setSearchText] = useState("");
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
@@ -67,8 +66,7 @@ export default function Command() {
               ? { detail: selectedDetail, isLoading: isLoadingDetail, error: selectedDetailError }
               : { detail: undefined, isLoading: false };
 
-          const detailMarkdown = getDetailMarkdown(item, renderState, pinSignature);
-          const metadata = buildMetadata(renderState.detail, pinSignature);
+          const detailMarkdown = getDetailMarkdown(item, renderState);
 
           return (
             <List.Item
@@ -78,7 +76,7 @@ export default function Command() {
               subtitle={item.name}
               accessories={[{ text: item.role.replace("py:", "") }]}
               icon={Icon.Book}
-              detail={<List.Item.Detail markdown={detailMarkdown} metadata={metadata} />}
+              detail={<List.Item.Detail markdown={detailMarkdown} />}
               actions={<ItemActions item={item} detail={renderState.detail} />}
             />
           );
@@ -88,7 +86,7 @@ export default function Command() {
   );
 }
 
-function getDetailMarkdown(item: InventoryItem, state: DetailRenderState, pinSignature: boolean): string {
+function getDetailMarkdown(item: InventoryItem, state: DetailRenderState): string {
   if (state.isLoading) {
     return "Loading details...";
   }
@@ -101,28 +99,40 @@ function getDetailMarkdown(item: InventoryItem, state: DetailRenderState, pinSig
     return "Select an entry to load its documentation.";
   }
 
-  return buildMarkdown(item, state.detail, { includeSignature: !pinSignature });
-}
-
-function buildMetadata(detail: DocDetail | undefined, pinSignature: boolean): List.Item.Detail.Metadata | undefined {
-  if (!pinSignature || !detail?.signature) {
-    return undefined;
-  }
-
-  return (
-    <List.Item.Detail.Metadata>
-      <List.Item.Detail.Metadata.Label title="Signature" text={detail.signature} />
-    </List.Item.Detail.Metadata>
-  );
+  return buildMarkdown(item, state.detail);
 }
 
 function ItemActions({ item, detail }: { item: InventoryItem; detail?: DocDetail }) {
   return (
     <ActionPanel>
+      <Action.Push
+        title="View Full Documentation"
+        icon={Icon.Document}
+        target={<FullScreenDocumentation item={item} detail={detail} />}
+      />
       <Action.OpenInBrowser title="Open in Browser" url={item.url} />
       <Action.CopyToClipboard title="Copy URL" content={item.url} />
       <Action.CopyToClipboard title="Copy Qualified Name" content={item.name} />
       {detail?.signature ? <Action.CopyToClipboard title="Copy Signature" content={detail.signature} /> : null}
     </ActionPanel>
+  );
+}
+
+function FullScreenDocumentation({ item, detail }: { item: InventoryItem; detail?: DocDetail }) {
+  const markdown = detail ? buildMarkdown(item, detail) : "Loading documentation...";
+
+  return (
+    <Detail
+      markdown={markdown}
+      navigationTitle={item.shortName}
+      actions={
+        <ActionPanel>
+          <Action.OpenInBrowser title="Open in Browser" url={item.url} />
+          <Action.CopyToClipboard title="Copy URL" content={item.url} />
+          <Action.CopyToClipboard title="Copy Qualified Name" content={item.name} />
+          {detail?.signature ? <Action.CopyToClipboard title="Copy Signature" content={detail.signature} /> : null}
+        </ActionPanel>
+      }
+    />
   );
 }
