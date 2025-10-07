@@ -151,4 +151,29 @@ describe("parseDocDetail", () => {
     expect(markdownWithNumpy).toContain("numpy.linspace");
     expect(markdownWithNumpy).not.toContain("np.linspace");
   });
+
+  it("removes ufunc assignment from function signature", () => {
+    const html = loadFixture("numpy.add.html");
+    const item: InventoryItem = {
+      id: "numpy.add",
+      name: "numpy.add",
+      shortName: "add",
+      role: "py:function",
+      url: "https://numpy.org/doc/stable/reference/generated/numpy.add.html#numpy.add",
+      docPath: "reference/generated/numpy.add.html#numpy.add",
+      displayName: "numpy.add",
+    };
+
+    const detail = parseDocDetail(html, item);
+
+    // Signature should not contain ufunc assignment
+    expect(detail.signature).not.toContain("= <ufunc");
+    expect(detail.signature).not.toContain("ufunc");
+    expect(detail.signature).toContain("numpy.add");
+    expect(detail.signature).toContain("(x1, x2)");
+
+    const markdown = buildMarkdown(item, detail);
+    expect(markdown).not.toContain("ufunc");
+    expect(markdown).toContain("numpy.add(x1, x2)");
+  });
 });
