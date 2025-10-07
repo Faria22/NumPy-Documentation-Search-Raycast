@@ -1,11 +1,11 @@
 # NumPy Documentation Search Changelog
 
-## [1.2.1] - 2025-01-07
+## [1.2.1] - 2025-10-26
 
 ### Fixed
 - Remove ufunc assignment notation from function signatures - Universal function signatures no longer show `= <ufunc 'name'>` suffix
 
-## [1.2.0] - 2025-01-07
+## [1.2.0] - 2025-10-26
 
 ### Added
 - **Prefix Toggle Preference**: New user preference to display 'np.' instead of 'numpy.' prefix throughout the extension
@@ -14,7 +14,7 @@
   - Can be toggled in Raycast extension preferences: "Use Short Prefix" checkbox
   - Affects display only - does not change underlying functionality or URLs
 
-## [1.1.1] - 2025-01-07
+## [1.1.1] - 2025-10-26
 
 ### Fixed
 - Remove hash fragments from documentation URLs - URLs now open to the clean page URL (e.g., `https://numpy.org/doc/stable/reference/generated/numpy.absolute.html`) instead of including the anchor fragment (e.g., `https://numpy.org/doc/stable/reference/generated/numpy.absolute.html#numpy.absolute`)
