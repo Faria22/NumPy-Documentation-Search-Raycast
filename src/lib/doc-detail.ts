@@ -205,9 +205,9 @@ function parseFieldDefinition($: cheerio.CheerioAPI, container: cheerio.Cheerio)
 
 function formatFieldItem(item: DocFieldItem): string {
   const lines: string[] = [];
-  
+
   // First line: parameter name and type
-  let firstLine = `**${item.name}**`;
+  let firstLine = `${item.name}`;
   if (item.type) {
     firstLine += ` : *${item.type}*`;
   }
@@ -215,7 +215,7 @@ function formatFieldItem(item: DocFieldItem): string {
 
   // Second line: description with indentation
   if (item.description) {
-    lines.push(`    ${item.description}`);
+    lines.push(`> ${item.description}`);
   }
 
   // Add blank line after each parameter for better markdown rendering
