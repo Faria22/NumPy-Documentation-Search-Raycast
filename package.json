@@ -24,6 +24,17 @@
       "mode": "view"
     }
   ],
+  "preferences": [
+    {
+      "name": "useShortPrefix",
+      "type": "checkbox",
+      "required": false,
+      "title": "Use Short Prefix",
+      "label": "Display 'np.' instead of 'numpy.'",
+      "description": "Show NumPy functions with 'np.' prefix (e.g., 'np.array') instead of 'numpy.' prefix (e.g., 'numpy.array')",
+      "default": true
+    }
+  ],
   "dependencies": {
     "@raycast/api": "^1.103.2",
     "@raycast/utils": "^1.17.0",
