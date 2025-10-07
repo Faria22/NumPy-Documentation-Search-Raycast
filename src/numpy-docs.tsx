@@ -13,7 +13,7 @@ type DetailRenderState = {
 };
 
 export default function Command() {
-  const { pinSignature = true } = getPreferenceValues<{ pinSignature: boolean }>();
+  const { floatSignatureHeader = true } = getPreferenceValues<{ floatSignatureHeader: boolean }>();
   const [searchText, setSearchText] = useState("");
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
@@ -67,8 +67,8 @@ export default function Command() {
               ? { detail: selectedDetail, isLoading: isLoadingDetail, error: selectedDetailError }
               : { detail: undefined, isLoading: false };
 
-          const detailMarkdown = getDetailMarkdown(item, renderState, pinSignature);
-          const metadata = buildMetadata(renderState.detail, pinSignature);
+          const detailMarkdown = getDetailMarkdown(item, renderState);
+          const metadata = buildMetadata(renderState.detail, floatSignatureHeader);
 
           return (
             <List.Item
@@ -88,7 +88,7 @@ export default function Command() {
   );
 }
 
-function getDetailMarkdown(item: InventoryItem, state: DetailRenderState, pinSignature: boolean): string {
+function getDetailMarkdown(item: InventoryItem, state: DetailRenderState): string {
   if (state.isLoading) {
     return "Loading details...";
   }
@@ -101,11 +101,14 @@ function getDetailMarkdown(item: InventoryItem, state: DetailRenderState, pinSig
     return "Select an entry to load its documentation.";
   }
 
-  return buildMarkdown(item, state.detail, { includeSignature: !pinSignature });
+  return buildMarkdown(item, state.detail);
 }
 
-function buildMetadata(detail: DocDetail | undefined, pinSignature: boolean): List.Item.Detail.Metadata | undefined {
-  if (!pinSignature || !detail?.signature) {
+function buildMetadata(
+  detail: DocDetail | undefined,
+  floatSignatureHeader: boolean,
+): List.Item.Detail.Metadata | undefined {
+  if (!floatSignatureHeader || !detail?.signature) {
     return undefined;
   }
 

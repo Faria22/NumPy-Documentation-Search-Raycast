@@ -24,11 +24,11 @@
       "mode": "view",
       "preferences": [
         {
-          "name": "pinSignature",
+          "name": "floatSignatureHeader",
           "type": "checkbox",
-          "title": "Pin Function Signature",
-          "label": "Keep signature at top",
-          "description": "Show the function signature as a fixed header above the documentation detail.",
+          "title": "Float Signature Header",
+          "label": "Show signature as floating header",
+          "description": "Display the function signature as a metadata header that remains visible while scrolling through documentation.",
           "default": true
         }
       ]

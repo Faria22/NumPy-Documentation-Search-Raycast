@@ -87,6 +87,12 @@ export function dedupeAndFilter(lines: RawInventoryLine[]): InventoryItem[] {
     const shortName = line.name.startsWith("numpy.") ? line.name.slice("numpy.".length) : line.name;
     const displayName = line.displayName === "-" ? line.name : line.displayName;
 
+    // Filter out private members (names starting with _ or __)
+    const lastSegment = shortName.split(".").pop() || "";
+    if (lastSegment.startsWith("_")) {
+      continue;
+    }
+
     const item: InventoryItem = {
       id: line.name,
       name: line.name,
