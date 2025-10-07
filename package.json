@@ -27,6 +27,7 @@
           "name": "pinSignature",
           "type": "checkbox",
           "title": "Pin Function Signature",
+          "label": "Keep signature at top",
           "default": true
         }
       ]
