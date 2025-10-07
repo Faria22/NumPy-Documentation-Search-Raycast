@@ -85,7 +85,7 @@ describe("dedupeAndFilter", () => {
     expect(result.some((item) => item.id === "numpy.linalg.norm")).toBe(true);
   });
 
-  it("filters only based on last segment of the name", () => {
+  it("filters based on any segment starting with underscore", () => {
     const lines = [
       {
         name: "numpy.ma.array",
@@ -101,11 +101,20 @@ describe("dedupeAndFilter", () => {
         uri: "reference/generated/numpy.ma._private.html#numpy.ma._private",
         displayName: "ma._private",
       },
+      {
+        name: "numpy.__array_namespace_info__.capabilities",
+        role: "py:function",
+        priority: 1,
+        uri: "reference/generated/numpy.__array_namespace_info__.capabilities.html",
+        displayName: "__array_namespace_info__.capabilities",
+      },
     ];
 
     const result = dedupeAndFilter(lines);
 
     expect(result.length).toBe(1);
     expect(result[0]?.id).toBe("numpy.ma.array");
+    expect(result.some((item) => item.id === "numpy.ma._private")).toBe(false);
+    expect(result.some((item) => item.id === "numpy.__array_namespace_info__.capabilities")).toBe(false);
   });
 });

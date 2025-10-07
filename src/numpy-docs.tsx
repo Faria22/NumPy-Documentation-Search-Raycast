@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Icon, List, getPreferenceValues } from "@raycast/api";
+import { Action, ActionPanel, Icon, List } from "@raycast/api";
 import { useEffect, useMemo, useState } from "react";
 import { useInventory } from "./hooks/useInventory";
 import { useDocDetail } from "./hooks/useDocDetail";
@@ -13,7 +13,6 @@ type DetailRenderState = {
 };
 
 export default function Command() {
-  const { floatSignatureHeader = true } = getPreferenceValues<{ floatSignatureHeader: boolean }>();
   const [searchText, setSearchText] = useState("");
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
@@ -68,7 +67,7 @@ export default function Command() {
               : { detail: undefined, isLoading: false };
 
           const detailMarkdown = getDetailMarkdown(item, renderState);
-          const metadata = buildMetadata(renderState.detail, floatSignatureHeader);
+          const metadata = buildMetadata(renderState.detail);
 
           return (
             <List.Item
@@ -104,11 +103,8 @@ function getDetailMarkdown(item: InventoryItem, state: DetailRenderState): strin
   return buildMarkdown(item, state.detail);
 }
 
-function buildMetadata(
-  detail: DocDetail | undefined,
-  floatSignatureHeader: boolean,
-): List.Item.Detail.Metadata | undefined {
-  if (!floatSignatureHeader || !detail?.signature) {
+function buildMetadata(detail: DocDetail | undefined): List.Item.Detail.Metadata | undefined {
+  if (!detail?.signature) {
     return undefined;
   }
 

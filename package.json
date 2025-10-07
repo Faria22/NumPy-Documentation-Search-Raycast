@@ -21,17 +21,7 @@
       "title": "NumPy Docs",
       "subtitle": "Search through Numpy documentation",
       "description": "Search NumPy's API reference and preview documentation inside Raycast.",
-      "mode": "view",
-      "preferences": [
-        {
-          "name": "floatSignatureHeader",
-          "type": "checkbox",
-          "title": "Float Signature Header",
-          "label": "Show signature as floating header",
-          "description": "Display the function signature as a metadata header that remains visible while scrolling through documentation.",
-          "default": true
-        }
-      ]
+      "mode": "view"
     }
   ],
   "dependencies": {
