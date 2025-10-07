@@ -214,6 +214,9 @@ function formatFieldItem(item: DocFieldItem): string {
     lines.push(`    ${item.description}`);
   }
 
+  // Add blank line after each parameter for better markdown rendering
+  lines.push("");
+
   return lines.join("\n");
 }
 
