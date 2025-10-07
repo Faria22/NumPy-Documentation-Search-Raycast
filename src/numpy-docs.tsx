@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Icon, List } from "@raycast/api";
+import { Action, ActionPanel, Detail, Icon, List } from "@raycast/api";
 import { useEffect, useMemo, useState } from "react";
 import { useInventory } from "./hooks/useInventory";
 import { useDocDetail } from "./hooks/useDocDetail";
@@ -105,10 +105,34 @@ function getDetailMarkdown(item: InventoryItem, state: DetailRenderState): strin
 function ItemActions({ item, detail }: { item: InventoryItem; detail?: DocDetail }) {
   return (
     <ActionPanel>
+      <Action.Push
+        title="View Full Documentation"
+        icon={Icon.Document}
+        target={<FullScreenDocumentation item={item} detail={detail} />}
+      />
       <Action.OpenInBrowser title="Open in Browser" url={item.url} />
       <Action.CopyToClipboard title="Copy URL" content={item.url} />
       <Action.CopyToClipboard title="Copy Qualified Name" content={item.name} />
       {detail?.signature ? <Action.CopyToClipboard title="Copy Signature" content={detail.signature} /> : null}
     </ActionPanel>
+  );
+}
+
+function FullScreenDocumentation({ item, detail }: { item: InventoryItem; detail?: DocDetail }) {
+  const markdown = detail ? buildMarkdown(item, detail) : "Loading documentation...";
+
+  return (
+    <Detail
+      markdown={markdown}
+      navigationTitle={item.shortName}
+      actions={
+        <ActionPanel>
+          <Action.OpenInBrowser title="Open in Browser" url={item.url} />
+          <Action.CopyToClipboard title="Copy URL" content={item.url} />
+          <Action.CopyToClipboard title="Copy Qualified Name" content={item.name} />
+          {detail?.signature ? <Action.CopyToClipboard title="Copy Signature" content={detail.signature} /> : null}
+        </ActionPanel>
+      }
+    />
   );
 }
