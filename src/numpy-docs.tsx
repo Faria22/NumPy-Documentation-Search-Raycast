@@ -1,4 +1,4 @@
-import { Action, ActionPanel, Icon, List } from "@raycast/api";
+import { Action, ActionPanel, Icon, List, getPreferenceValues } from "@raycast/api";
 import { useEffect, useMemo, useState } from "react";
 import { useInventory } from "./hooks/useInventory";
 import { useDocDetail } from "./hooks/useDocDetail";
@@ -13,6 +13,7 @@ type DetailRenderState = {
 };
 
 export default function Command() {
+  const { pinSignature = true } = getPreferenceValues<{ pinSignature: boolean }>();
   const [searchText, setSearchText] = useState("");
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
@@ -66,7 +67,8 @@ export default function Command() {
               ? { detail: selectedDetail, isLoading: isLoadingDetail, error: selectedDetailError }
               : { detail: undefined, isLoading: false };
 
-          const detailMarkdown = getDetailMarkdown(item, renderState);
+          const detailMarkdown = getDetailMarkdown(item, renderState, pinSignature);
+          const metadata = buildMetadata(renderState.detail, pinSignature);
 
           return (
             <List.Item
@@ -76,7 +78,7 @@ export default function Command() {
               subtitle={item.name}
               accessories={[{ text: item.role.replace("py:", "") }]}
               icon={Icon.Book}
-              detail={<List.Item.Detail markdown={detailMarkdown} />}
+              detail={<List.Item.Detail markdown={detailMarkdown} metadata={metadata} />}
               actions={<ItemActions item={item} detail={renderState.detail} />}
             />
           );
@@ -86,7 +88,7 @@ export default function Command() {
   );
 }
 
-function getDetailMarkdown(item: InventoryItem, state: DetailRenderState): string {
+function getDetailMarkdown(item: InventoryItem, state: DetailRenderState, pinSignature: boolean): string {
   if (state.isLoading) {
     return "Loading details...";
   }
@@ -99,7 +101,19 @@ function getDetailMarkdown(item: InventoryItem, state: DetailRenderState): strin
     return "Select an entry to load its documentation.";
   }
 
-  return buildMarkdown(item, state.detail);
+  return buildMarkdown(item, state.detail, { includeSignature: !pinSignature });
+}
+
+function buildMetadata(detail: DocDetail | undefined, pinSignature: boolean): List.Item.Detail.Metadata | undefined {
+  if (!pinSignature || !detail?.signature) {
+    return undefined;
+  }
+
+  return (
+    <List.Item.Detail.Metadata>
+      <List.Item.Detail.Metadata.Label title="Signature" text={detail.signature} />
+    </List.Item.Detail.Metadata>
+  );
 }
 
 function ItemActions({ item, detail }: { item: InventoryItem; detail?: DocDetail }) {

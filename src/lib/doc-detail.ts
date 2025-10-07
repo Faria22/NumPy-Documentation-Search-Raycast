@@ -53,10 +53,15 @@ export function parseDocDetail(html: string, item: InventoryItem): DocDetail {
   };
 }
 
-export function buildMarkdown(item: InventoryItem, detail: DocDetail): string {
+export function buildMarkdown(
+  item: InventoryItem,
+  detail: DocDetail,
+  options?: { includeSignature?: boolean },
+): string {
+  const includeSignature = options?.includeSignature ?? true;
   const lines: string[] = [];
 
-  if (detail.signature) {
+  if (includeSignature && detail.signature) {
     lines.push("```python");
     lines.push(detail.signature);
     lines.push("```");
