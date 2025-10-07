@@ -26,7 +26,18 @@
             <dt><strong>start</strong><span class="classifier">array_like</span></dt>
             <dd><p>The starting value of the sequence.</p></dd>
             <dt><strong>stop</strong><span class="classifier">array_like</span></dt>
-            <dd><p>The end value of the sequence.</p></dd>
+            <dd>
+              <p>
+                The end value of the sequence, unless
+                <code class="docutils literal notranslate"><span class="pre">endpoint</span></code> is set to
+                <code class="docutils literal notranslate"><span class="pre">False</span></code
+                >. In that case, the sequence consists of all but the last of
+                <code class="docutils literal notranslate"
+                  ><span class="pre">num</span> <span class="pre">+</span> <span class="pre">1</span></code
+                >
+                evenly spaced samples.
+              </p>
+            </dd>
           </dl>
         </dd>
         <dt class="field-even">Returns:</dt>

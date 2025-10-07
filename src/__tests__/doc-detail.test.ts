@@ -104,4 +104,25 @@ describe("parseDocDetail", () => {
     expect(markdown).toMatch(/^```python\n/);
     expect(markdown).toContain(detail.signature);
   });
+
+  it("preserves inline code blocks in parameter descriptions", () => {
+    const html = loadFixture("numpy.linspace.html");
+    const item: InventoryItem = {
+      id: "numpy.linspace",
+      name: "numpy.linspace",
+      shortName: "linspace",
+      role: "py:function",
+      url: "https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace",
+      docPath: "reference/generated/numpy.linspace.html#numpy.linspace",
+      displayName: "numpy.linspace",
+    };
+
+    const detail = parseDocDetail(html, item);
+    const markdown = buildMarkdown(item, detail);
+
+    // Check that inline code blocks are preserved in parameter descriptions
+    expect(markdown).toContain("`endpoint`");
+    expect(markdown).toContain("`False`");
+    expect(markdown).toContain("`num + 1`");
+  });
 });

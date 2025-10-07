@@ -187,11 +187,11 @@ function parseFieldDefinition($: cheerio.CheerioAPI, container: cheerio.Cheerio)
     const descriptionNode = term.next("dd");
     const paragraphs = descriptionNode
       .find("p")
-      .map((__, p) => normalizeWhitespace($(p).text()))
+      .map((__, p) => convertHtmlToMarkdown($(p)))
       .get()
       .filter(Boolean);
 
-    const description = paragraphs.length > 0 ? paragraphs.join(" ") : normalizeWhitespace(descriptionNode.text());
+    const description = paragraphs.length > 0 ? paragraphs.join(" ") : convertHtmlToMarkdown(descriptionNode);
 
     items.push({
       name,
@@ -226,4 +226,18 @@ function formatFieldItem(item: DocFieldItem): string {
 
 function normalizeWhitespace(value: string): string {
   return value.replace(/\s+/g, " ").trim();
+}
+
+function convertHtmlToMarkdown(element: cheerio.Cheerio): string {
+  // Clone the element to avoid modifying the original
+  const clone = element.clone();
+
+  // Convert <code> tags to markdown backticks
+  clone.find("code").each((_, codeElement) => {
+    const codeText = clone.find(codeElement).text();
+    clone.find(codeElement).replaceWith(`\`${codeText}\``);
+  });
+
+  // Get the text content and normalize whitespace
+  return normalizeWhitespace(clone.text());
 }
