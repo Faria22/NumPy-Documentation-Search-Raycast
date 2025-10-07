@@ -67,7 +67,6 @@ export default function Command() {
               : { detail: undefined, isLoading: false };
 
           const detailMarkdown = getDetailMarkdown(item, renderState);
-          const metadata = buildMetadata(renderState.detail);
 
           return (
             <List.Item
@@ -77,7 +76,7 @@ export default function Command() {
               subtitle={item.name}
               accessories={[{ text: item.role.replace("py:", "") }]}
               icon={Icon.Book}
-              detail={<List.Item.Detail markdown={detailMarkdown} metadata={metadata} />}
+              detail={<List.Item.Detail markdown={detailMarkdown} />}
               actions={<ItemActions item={item} detail={renderState.detail} />}
             />
           );
@@ -101,18 +100,6 @@ function getDetailMarkdown(item: InventoryItem, state: DetailRenderState): strin
   }
 
   return buildMarkdown(item, state.detail);
-}
-
-function buildMetadata(detail: DocDetail | undefined): List.Item.Detail.Metadata | undefined {
-  if (!detail?.signature) {
-    return undefined;
-  }
-
-  return (
-    <List.Item.Detail.Metadata>
-      <List.Item.Detail.Metadata.Label title="Signature" text={detail.signature} />
-    </List.Item.Detail.Metadata>
-  );
 }
 
 function ItemActions({ item, detail }: { item: InventoryItem; detail?: DocDetail }) {
