@@ -117,4 +117,33 @@ describe("dedupeAndFilter", () => {
     expect(result.some((item) => item.id === "numpy.ma._private")).toBe(false);
     expect(result.some((item) => item.id === "numpy.__array_namespace_info__.capabilities")).toBe(false);
   });
+
+  it("removes hash fragments from URLs", () => {
+    const lines = [
+      {
+        name: "numpy.absolute",
+        role: "py:function",
+        priority: 1,
+        uri: "reference/generated/numpy.absolute.html#numpy.absolute",
+        displayName: "absolute",
+      },
+      {
+        name: "numpy.linalg.norm",
+        role: "py:function",
+        priority: 1,
+        uri: "reference/generated/numpy.linalg.norm.html#numpy.linalg.norm",
+        displayName: "linalg.norm",
+      },
+    ];
+
+    const result = dedupeAndFilter(lines);
+
+    expect(result.length).toBe(2);
+    // URLs should not contain hash fragments
+    expect(result[0]?.url).toBe("https://numpy.org/doc/stable/reference/generated/numpy.absolute.html");
+    expect(result[1]?.url).toBe("https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html");
+    // But docPath should still contain them for HTML parsing
+    expect(result[0]?.docPath).toBe("reference/generated/numpy.absolute.html#numpy.absolute");
+    expect(result[1]?.docPath).toBe("reference/generated/numpy.linalg.norm.html#numpy.linalg.norm");
+  });
 });

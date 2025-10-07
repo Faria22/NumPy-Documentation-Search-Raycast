@@ -83,7 +83,9 @@ export function dedupeAndFilter(lines: RawInventoryLine[]): InventoryItem[] {
     }
 
     const urlPath = resolveUri(line.uri, line.name);
-    const url = new URL(urlPath, DOCUMENT_BASE_URL).toString();
+    // Strip hash fragment from URL for browser navigation
+    const urlPathWithoutHash = urlPath.split("#")[0];
+    const url = new URL(urlPathWithoutHash, DOCUMENT_BASE_URL).toString();
     const shortName = line.name.startsWith("numpy.") ? line.name.slice("numpy.".length) : line.name;
     const displayName = line.displayName === "-" ? line.name : line.displayName;
 
