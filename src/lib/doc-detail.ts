@@ -200,18 +200,21 @@ function parseFieldDefinition($: cheerio.CheerioAPI, container: cheerio.Cheerio)
 }
 
 function formatFieldItem(item: DocFieldItem): string {
-  const parts: string[] = [];
-  parts.push(`- \`${item.name}\` `);
-
+  const lines: string[] = [];
+  
+  // First line: parameter name and type
+  let firstLine = `**${item.name}**`;
   if (item.type) {
-    parts.push(`*${item.type}*`);
+    firstLine += ` : *${item.type}*`;
   }
+  lines.push(firstLine);
 
+  // Second line: description with indentation
   if (item.description) {
-    parts.push(`- ${item.description}`);
+    lines.push(`    ${item.description}`);
   }
 
-  return parts.join(" ");
+  return lines.join("\n");
 }
 
 function normalizeWhitespace(value: string): string {
