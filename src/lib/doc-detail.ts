@@ -74,7 +74,7 @@ export function buildMarkdown(
   }
 
   if (detail.parameters.length > 0) {
-    lines.push("#### Parameters");
+    lines.push("## Parameters");
     lines.push("");
     for (const param of detail.parameters) {
       lines.push(formatFieldItem(param));
@@ -83,7 +83,7 @@ export function buildMarkdown(
   }
 
   if (detail.returns.length > 0) {
-    lines.push("#### Returns");
+    lines.push("## Returns");
     lines.push("");
     for (const value of detail.returns) {
       lines.push(formatFieldItem(value));

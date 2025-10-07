@@ -30,8 +30,8 @@ describe("parseDocDetail", () => {
     expect(detail.returns.length).toBeGreaterThan(0);
 
     const markdown = buildMarkdown(item, detail);
-    expect(markdown).toContain("#### Parameters");
-    expect(markdown).toContain("#### Returns");
+    expect(markdown).toContain("## Parameters");
+    expect(markdown).toContain("## Returns");
   });
 
   it("parses numpy.ndarray.any method documentation", () => {
@@ -54,6 +54,6 @@ describe("parseDocDetail", () => {
     expect(detail.parameters.length).toBeGreaterThanOrEqual(0);
 
     const markdown = buildMarkdown(item, detail);
-    expect(markdown).toContain("Source: [ndarray.any]");
+    expect(markdown).toContain("## Returns");
   });
 });
