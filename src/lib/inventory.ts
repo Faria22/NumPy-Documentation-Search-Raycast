@@ -1,8 +1,7 @@
-import fetch from "node-fetch";
 import { inflateSync } from "zlib";
 
-const INVENTORY_URL = "https://numpy.org/doc/stable/objects.inv";
-const DOCUMENT_BASE_URL = "https://numpy.org/doc/stable/";
+export const INVENTORY_URL = "https://numpy.org/doc/stable/objects.inv";
+export const DOCUMENT_BASE_URL = "https://numpy.org/doc/stable/";
 const ALLOWED_ROLES = new Set([
   "py:function",
   "py:method",
@@ -24,42 +23,6 @@ export interface InventoryItem {
   displayName: string;
 }
 
-let cachedInventoryPromise: Promise<InventoryItem[]> | null = null;
-
-export async function getInventory(): Promise<InventoryItem[]> {
-  if (!cachedInventoryPromise) {
-    cachedInventoryPromise = downloadInventory().catch((error) => {
-      cachedInventoryPromise = null;
-      console.error("[numpy-docs] Failed to download inventory", error);
-      throw error;
-    });
-  }
-
-  return cachedInventoryPromise;
-}
-
-async function downloadInventory(): Promise<InventoryItem[]> {
-  console.log("[numpy-docs] Downloading objects.inv from", INVENTORY_URL);
-  const response = await fetch(INVENTORY_URL);
-
-  if (!response.ok) {
-    console.error("[numpy-docs] Inventory request failed", response.status, response.statusText);
-    throw new Error(`Failed to load NumPy inventory: ${response.status} ${response.statusText}`);
-  }
-
-  const arrayBuffer = await response.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-
-  const lines = parseInventory(buffer);
-  const filtered = dedupeAndFilter(lines);
-
-  filtered.sort((a, b) => a.shortName.localeCompare(b.shortName));
-
-  console.log(`[numpy-docs] Inventory loaded with ${filtered.length} entries`);
-
-  return filtered;
-}
-
 interface RawInventoryLine {
   name: string;
   role: string;
@@ -68,7 +31,7 @@ interface RawInventoryLine {
   displayName: string;
 }
 
-function parseInventory(buffer: Buffer): RawInventoryLine[] {
+export function parseInventory(buffer: Buffer): RawInventoryLine[] {
   let offset = 0;
 
   function readLine() {
@@ -79,14 +42,13 @@ function parseInventory(buffer: Buffer): RawInventoryLine[] {
     return line;
   }
 
-  // Header (ignored apart from validation)
   const header = readLine();
   if (!header.startsWith("# Sphinx inventory version")) {
     throw new Error("Unexpected objects.inv header");
   }
-  readLine(); // project metadata
-  readLine(); // version metadata
-  readLine(); // blank separator
+  readLine();
+  readLine();
+  readLine();
 
   const compressed = buffer.subarray(offset);
   const decompressed = inflateSync(compressed).toString("utf-8");
@@ -108,7 +70,7 @@ function parseInventory(buffer: Buffer): RawInventoryLine[] {
     });
 }
 
-function dedupeAndFilter(lines: RawInventoryLine[]): InventoryItem[] {
+export function dedupeAndFilter(lines: RawInventoryLine[]): InventoryItem[] {
   const seen = new Map<string, InventoryItem>();
 
   for (const line of lines) {
@@ -155,4 +117,12 @@ function resolveUri(uri: string, name: string): string {
   }
 
   return resolved;
+}
+
+export function transformInventoryResponse(buffer: ArrayBuffer): InventoryItem[] {
+  const raw = Buffer.from(buffer);
+  const lines = parseInventory(raw);
+  const filtered = dedupeAndFilter(lines);
+  filtered.sort((a, b) => a.shortName.localeCompare(b.shortName));
+  return filtered;
 }

@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import * as cheerio from "cheerio";
 import type { InventoryItem } from "./inventory";
 
@@ -15,55 +14,19 @@ export interface DocDetail {
   returns: DocFieldItem[];
 }
 
-export async function fetchDocDetail(item: InventoryItem): Promise<DocDetail> {
-  console.log(`[numpy-docs] Fetching detail for ${item.id}`, item.url);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 10000);
-
-  try {
-    const response = (await fetch(item.url, { signal: controller.signal })) as any;
-
-    console.log("[numpy-docs] Detail response status", item.id, response.status, response.statusText);
-
-    if (!response.ok) {
-      console.error("[numpy-docs] Detail request failed", item.url, response.status, response.statusText);
-      throw new Error(`Failed to load documentation: ${response.status} ${response.statusText}`);
-    }
-
-    const html = await response.text();
-    console.log(`[numpy-docs] Detail response length for ${item.id}:`, html.length);
-    console.log(`[numpy-docs] Detail response preview for ${item.id}:`, html.slice(0, 120));
-    return parseDocDetail(html, item);
-  } catch (error) {
-    clearTimeout(timeout);
-    if ((error as Error).name === "AbortError") {
-      console.error("[numpy-docs] Detail request timed out", item.url);
-    }
-    console.error("[numpy-docs] Detail fetch error", item.id, (error as Error).name, (error as Error).message);
-    throw error;
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
 export function parseDocDetail(html: string, item: InventoryItem): DocDetail {
   const $ = cheerio.load(html);
 
   const anchor = extractAnchor(item.url);
   let target = anchor ? $("[id='" + anchor + "']") : $("section").first();
-  console.log(`[numpy-docs] Parsing detail for ${item.id} using anchor`, anchor);
   if (!target || target.length === 0) {
     target = $("dl.py").first().children("dt").first();
-    console.log(`[numpy-docs] Fallback target used for ${item.id}`);
   }
 
   const definition = target.closest("dl");
 
   let signature = normalizeWhitespace(target.text()).replace(/[#¶]$/, "");
   signature = signature.replace(/numpy\.\s+/g, "numpy.").replace(/\s+\(/g, "(");
-  console.log(`[numpy-docs] Extracted signature for ${item.id}:`, signature);
 
   if (signature && !signature.includes(item.name)) {
     if (signature.startsWith(item.shortName)) {
@@ -81,12 +44,6 @@ export function parseDocDetail(html: string, item: InventoryItem): DocDetail {
 
   const description = extractDescription($, detailNode);
   const { parameters, returns } = extractFieldLists($, detailNode);
-  console.log(`[numpy-docs] Parsed detail counts for ${item.id}:`, {
-    descriptionCount: description.length,
-    parameterCount: parameters.length,
-    returnCount: returns.length,
-  });
-
   return {
     signature: signature || undefined,
     description,
