@@ -75,17 +75,18 @@ describe("parseDocDetail", () => {
     // Should start with ```python code block
     expect(markdown).toMatch(/^```python\n/);
 
-    // Should contain the signature in the markdown
-    expect(markdown).toContain(detail.signature);
+    // Should contain enhanced signature with def keyword
+    expect(markdown).toContain("def numpy.linspace");
 
-    // Count occurrences of the signature - should appear exactly once
-    const signatureOccurrences = (
-      markdown.match(new RegExp(detail.signature!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []
-    ).length;
-    expect(signatureOccurrences).toBe(1);
+    // Should contain type annotations for parameters
+    expect(markdown).toContain("start: array_like");
+    expect(markdown).toContain("stop: array_like");
+
+    // Should contain return type annotation
+    expect(markdown).toContain("-> ndarray");
   });
 
-  it("signature appears as fenced Python code block", () => {
+  it("signature appears as fenced Python code block with syntax highlighting", () => {
     const html = loadFixture("numpy.linspace.html");
     const item: InventoryItem = {
       id: "numpy.linspace",
@@ -99,9 +100,10 @@ describe("parseDocDetail", () => {
 
     const detail = parseDocDetail(html, item);
 
-    // Signature should always be in markdown as a Python code block
+    // Signature should always be in markdown as a Python code block with enhanced syntax
     const markdown = buildMarkdown(item, detail);
     expect(markdown).toMatch(/^```python\n/);
-    expect(markdown).toContain(detail.signature);
+    expect(markdown).toContain("def numpy.linspace");
+    expect(markdown).toContain(":");
   });
 });

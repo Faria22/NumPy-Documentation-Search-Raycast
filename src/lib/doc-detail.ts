@@ -58,7 +58,8 @@ export function buildMarkdown(item: InventoryItem, detail: DocDetail): string {
 
   if (detail.signature) {
     lines.push("```python");
-    lines.push(detail.signature);
+    const enhancedSignature = enhanceSignatureWithTypes(detail.signature, detail.parameters, detail.returns);
+    lines.push(enhancedSignature);
     lines.push("```");
     lines.push("");
   }
@@ -201,6 +202,56 @@ function parseFieldDefinition($: cheerio.CheerioAPI, container: cheerio.Cheerio)
   });
 
   return items;
+}
+
+function enhanceSignatureWithTypes(signature: string, parameters: DocFieldItem[], returns: DocFieldItem[]): string {
+  // Extract function name and params from signature
+  const match = signature.match(/^([^(]+)\((.*)\)\s*$/);
+  if (!match) {
+    // If signature doesn't match expected pattern, add def keyword at least
+    return `def ${signature}:`;
+  }
+
+  const funcName = match[1].trim();
+  const paramsStr = match[2].trim();
+
+  // Parse parameters from signature
+  const paramParts = paramsStr
+    ? paramsStr
+        .split(",")
+        .map((p) => p.trim())
+        .filter(Boolean)
+    : [];
+
+  // Build enhanced params with type hints
+  const enhancedParams = paramParts.map((param) => {
+    // Extract param name and default value
+    const equalIndex = param.indexOf("=");
+    let paramName: string;
+    let defaultValue: string | null = null;
+
+    if (equalIndex !== -1) {
+      paramName = param.slice(0, equalIndex).trim();
+      defaultValue = param.slice(equalIndex + 1).trim();
+    } else {
+      paramName = param.trim();
+    }
+
+    // Find type info from parameters list
+    const paramInfo = parameters.find((p) => p.name === paramName);
+    const typeAnnotation = paramInfo?.type ? `: ${paramInfo.type}` : "";
+
+    if (defaultValue) {
+      return `${paramName}${typeAnnotation} = ${defaultValue}`;
+    }
+    return `${paramName}${typeAnnotation}`;
+  });
+
+  // Build return type annotation
+  const returnType = returns.length > 0 && returns[0].type ? ` -> ${returns[0].type}` : "";
+
+  // Build enhanced signature with def keyword, type hints, and trailing colon
+  return `def ${funcName}(${enhancedParams.join(", ")})${returnType}:`;
 }
 
 function formatFieldItem(item: DocFieldItem): string {
