@@ -28,6 +28,7 @@
           "type": "checkbox",
           "title": "Pin Function Signature",
           "label": "Keep signature at top",
+          "description": "Show the function signature as a fixed header above the documentation detail.",
           "default": true
         }
       ]
