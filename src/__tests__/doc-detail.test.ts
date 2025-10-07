@@ -24,6 +24,7 @@ describe("parseDocDetail", () => {
     const detail = parseDocDetail(html, item);
 
     expect(detail.signature).toContain("numpy.linspace");
+    expect(detail.signature).not.toContain("[source]");
     expect(detail.description.length).toBeGreaterThan(0);
     expect(detail.parameters.length).toBeGreaterThan(1);
     expect(detail.returns.length).toBeGreaterThan(0);
@@ -48,6 +49,7 @@ describe("parseDocDetail", () => {
     const detail = parseDocDetail(html, item);
 
     expect(detail.signature).toContain("numpy.ndarray.any");
+    expect(detail.signature).not.toContain("[source]");
     expect(detail.description.length).toBeGreaterThan(0);
     expect(detail.parameters.length).toBeGreaterThanOrEqual(0);
 

@@ -27,6 +27,7 @@ export function parseDocDetail(html: string, item: InventoryItem): DocDetail {
 
   let signature = normalizeWhitespace(target.text()).replace(/[#¶]$/, "");
   signature = signature.replace(/numpy\.\s+/g, "numpy.").replace(/\s+\(/g, "(");
+  signature = signature.replace(/\[source\]\s*$/i, "").trim();
 
   if (signature && !signature.includes(item.name)) {
     if (signature.startsWith(item.shortName)) {
