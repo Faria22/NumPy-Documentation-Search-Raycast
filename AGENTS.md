@@ -44,7 +44,7 @@ npm run test
 
 - Follow conventional commits (`feat:`, `fix:`, `chore:`, etc.) for clarity.
 - Each PR should summarize changes, list verification steps (`npm run test`, `npm run build`, `npm run lint`), and attach screenshots or screen recordings for UI tweaks.
-- Keep `CHANGELOG.md` updated with user-facing changes before publishing.
+- **Always update `CHANGELOG.md` after making any changes** to document user-facing modifications, bug fixes, or improvements.
 - Always push your branch immediately after each commit to keep remote history in sync.
 
 ## Raycast-Specific Tips

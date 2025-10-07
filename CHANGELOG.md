@@ -1,8 +1,33 @@
 # NumPy Documentation Search Changelog
 
-## [Unreleased]
+## [1.1.0] - 2025-10-06
 
 ### Fixed
 - Preserve inline code blocks in parameter descriptions - code references like `endpoint`, `False`, and `num + 1` now appear with proper backtick formatting instead of plain text
 
-## [Initial Version] - {PR_MERGE_DATE}
+## [1.0.0] - 2025-10-06
+
+### Added
+
+- **Core Search Functionality**: Real-time search through NumPy Sphinx inventory with intelligent ranking
+  - Prefix matching prioritization for accurate results
+  - Short name search support (search "norm" to find "numpy.linalg.norm")
+  - Filters out private members (functions/methods starting with `_` or `__`)
+- **Documentation Display**: Rich documentation preview inside Raycast
+  - Function/method signatures formatted as Python code blocks
+  - Parameter lists with type annotations and descriptions
+  - Return value documentation
+  - Descriptive summaries extracted from official NumPy docs
+- **Sphinx Inventory Integration**: Automatic loading and caching of NumPy API reference
+  - Supports multiple Python object types (functions, methods, classes, attributes, properties, modules, exceptions)
+  - Deduplication and filtering for clean search results
+  - Direct links to official numpy.org documentation
+- **User Actions**: Quick access to documentation and metadata
+  - View full documentation in expanded detail view
+  - Open official docs in browser
+  - Copy URL, qualified name, or signature to clipboard
+- **Test Coverage**: Comprehensive test suite for reliability
+  - Search ranking and filtering tests
+  - HTML documentation parsing tests
+  - Inventory loading and deduplication tests
+  - Fixtures mirroring NumPy documentation structure
