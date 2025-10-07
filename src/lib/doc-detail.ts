@@ -201,14 +201,14 @@ function parseFieldDefinition($: cheerio.CheerioAPI, container: cheerio.Cheerio)
 
 function formatFieldItem(item: DocFieldItem): string {
   const parts: string[] = [];
-  parts.push(`- **${item.name}**`);
+  parts.push(`- \`${item.name}\` `);
 
   if (item.type) {
     parts.push(`*${item.type}*`);
   }
 
   if (item.description) {
-    parts.push(`— ${item.description}`);
+    parts.push(`- ${item.description}`);
   }
 
   return parts.join(" ");
