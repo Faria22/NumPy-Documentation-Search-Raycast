@@ -72,7 +72,9 @@ export function buildMarkdown(item: InventoryItem, detail: DocDetail): string {
     lines.push("## Parameters");
     lines.push("");
     for (const param of detail.parameters) {
-      lines.push(formatFieldItem(param));
+      const formattedParam = formatFieldItem(param);
+      // Split the formatted parameter and add each line individually
+      lines.push(...formattedParam.split("\n"));
     }
     lines.push("");
   }
@@ -81,7 +83,9 @@ export function buildMarkdown(item: InventoryItem, detail: DocDetail): string {
     lines.push("## Returns");
     lines.push("");
     for (const value of detail.returns) {
-      lines.push(formatFieldItem(value));
+      const formattedReturn = formatFieldItem(value);
+      // Split the formatted return value and add each line individually
+      lines.push(...formattedReturn.split("\n"));
     }
     lines.push("");
   }
