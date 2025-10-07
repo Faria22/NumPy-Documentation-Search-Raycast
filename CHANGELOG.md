@@ -1,5 +1,10 @@
 # NumPy Documentation Search Changelog
 
+## [1.2.1] - 2025-01-07
+
+### Fixed
+- Remove ufunc assignment notation from function signatures - Universal function signatures no longer show `= <ufunc 'name'>` suffix
+
 ## [1.2.0] - 2025-01-07
 
 ### Added

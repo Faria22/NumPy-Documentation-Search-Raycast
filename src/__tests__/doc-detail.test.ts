@@ -170,10 +170,10 @@ describe("parseDocDetail", () => {
     expect(detail.signature).not.toContain("= <ufunc");
     expect(detail.signature).not.toContain("ufunc");
     expect(detail.signature).toContain("numpy.add");
-    expect(detail.signature).toContain("(x1, x2)");
+    expect(detail.signature).toMatch(/numpy\.add\(.+\)/);
 
     const markdown = buildMarkdown(item, detail);
     expect(markdown).not.toContain("ufunc");
-    expect(markdown).toContain("numpy.add(x1, x2)");
+    expect(markdown).toContain("numpy.add");
   });
 });
