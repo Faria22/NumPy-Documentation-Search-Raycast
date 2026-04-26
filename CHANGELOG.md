@@ -7,6 +7,7 @@
 - Add configurable documentation source preferences for auto and local directory modes
 
 ### Changed
+- Default to online documentation without requiring an initial source-selection prompt
 - Fall back to local documentation when remote inventory loading fails
 - Load inline documentation previews from a configured local docs directory when network access is unavailable
 

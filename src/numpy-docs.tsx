@@ -9,7 +9,7 @@ import { applyPrefixPreference } from "./lib/prefix";
 import { searchInventory } from "./lib/search";
 
 interface Preferences {
-  documentationSourceMode: DocumentationSourceMode;
+  documentationSourceMode?: DocumentationSourceMode;
   localDocsDirectory?: string;
   useShortPrefix: boolean;
 }
@@ -26,6 +26,7 @@ export default function Command() {
   const [searchText, setSearchText] = useState("");
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const preferences = getPreferenceValues<Preferences>();
+  const documentationSourceMode = preferences.documentationSourceMode ?? "online";
 
   const {
     data: inventory = [],
@@ -36,7 +37,7 @@ export default function Command() {
     source: inventorySource,
   } = useInventory({
     localDocsDirectory: preferences.localDocsDirectory,
-    mode: preferences.documentationSourceMode,
+    mode: documentationSourceMode,
   });
 
   const results = useMemo(() => searchInventory(inventory, searchText), [inventory, searchText]);
@@ -78,7 +79,7 @@ export default function Command() {
     inventorySource,
     item: selectedItem,
     localDocsDirectory: preferences.localDocsDirectory,
-    mode: preferences.documentationSourceMode,
+    mode: documentationSourceMode,
   });
 
   const listIsLoading = isLoadingInventory;
