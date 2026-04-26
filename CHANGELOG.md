@@ -8,8 +8,13 @@
 
 ### Changed
 - Default to online documentation without requiring an initial source-selection prompt
+- Document the optional source preference pattern in the local docs fallback guide for reuse in other repos
 - Fall back to local documentation when remote inventory loading fails
 - Load inline documentation previews from a configured local docs directory when network access is unavailable
+- Document how to replicate the Windows local-docs symlink fallback in other documentation-search extensions
+
+### Fixed
+- Support local documentation checkouts on Windows where the `stable` symlink is stored as a text file
 
 ## [1.2.3] - 2025-10-08
 
