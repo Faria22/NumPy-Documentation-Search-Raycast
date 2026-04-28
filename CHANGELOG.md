@@ -1,16 +1,20 @@
 # NumPy Documentation Search Changelog
 
-## [1.3.0] - {PR_MERGE_DATE}
+## [1.3.1] - {PR_MERGE_DATE}
+
+### Changed
+- Remove the standalone local documentation fallback guide from the packaged repository
+- Default to online documentation without requiring an initial source-selection prompt
+- Document the optional source preference pattern in the local docs fallback guide for reuse in other repos
+
+## [1.3.0] - 2026-04-20
 
 ### Added
 - Add guided recovery when live access to `numpy.org` fails, including in-app setup steps for downloaded local docs
 - Add configurable documentation source preferences for auto and local directory modes
 
 ### Changed
-- Default to online documentation without requiring an initial source-selection prompt
-- Document the optional source preference pattern in the local docs fallback guide for reuse in other repos
 - Fall back to local documentation when remote inventory loading fails
-- Load inline documentation previews from a configured local docs directory when network access is unavailable
 - Document how to replicate the Windows local-docs symlink fallback in other documentation-search extensions
 
 ### Fixed
