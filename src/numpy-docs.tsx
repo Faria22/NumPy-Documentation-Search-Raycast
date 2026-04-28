@@ -1,4 +1,13 @@
-import { Action, ActionPanel, Detail, getPreferenceValues, Icon, List, openCommandPreferences } from "@raycast/api";
+import {
+  Action,
+  ActionPanel,
+  Detail,
+  getPreferenceValues,
+  Icon,
+  List,
+  openCommandPreferences,
+  type PreferenceValues,
+} from "@raycast/api";
 import { useEffect, useMemo, useState } from "react";
 import { useDocDetail } from "./hooks/useDocDetail";
 import { useInventory } from "./hooks/useInventory";
@@ -78,8 +87,13 @@ export default function Command() {
   } = useDocDetail({
     inventorySource,
     item: selectedItem,
+<<<<<<< HEAD
     localDocsDirectory: preferences.localDocsDirectory,
     mode: documentationSourceMode,
+=======
+    localDocsDirectory: preferences.localDocsDirectory as string | undefined,
+    mode: preferences.documentationSourceMode as DocumentationSourceMode,
+>>>>>>> contributions/merge-1777336259428
   });
 
   const listIsLoading = isLoadingInventory;
